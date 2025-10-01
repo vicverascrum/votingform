@@ -113,6 +113,13 @@ function createQuestionElement(question, index) {
                     ${question.description ? `<div style="font-size: 0.85rem; color: #555; margin: 0.3rem 0; line-height: 1.4;">${question.description}</div>` : ''}
                     <div class="question-meta">
                         <span class="hours-badge badge-foundever">${hours}h</span>
+                        <select id="priority_${question.id}" name="priority_${question.id}" 
+                                style="margin-left: 0.5rem; padding: 0.2rem 0.4rem; border: 1px solid #ccc; border-radius: 4px; font-size: 0.8rem; display: none;">
+                            <option value="">Select Priority</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
                     </div>
                     ${note ? `<div style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">📝 ${note}</div>` : ''}
                 </div>
@@ -157,6 +164,7 @@ function handleCheckboxChange(checkbox) {
     const hours = parseInt(checkbox.dataset.hours) || 0;
     const title = checkbox.dataset.title || '';
     const questionId = checkbox.id;
+    const prioritySelect = document.getElementById(`priority_${questionId}`);
     
     if (checkbox.checked) {
         // Check if this would exceed capacity
@@ -166,20 +174,48 @@ function handleCheckboxChange(checkbox) {
             return;
         }
         
+        // Show priority dropdown
+        if (prioritySelect) {
+            prioritySelect.style.display = 'inline-block';
+        }
+        
         selectedItems.push({
             id: questionId,
             title: title,
-            hours: hours
+            hours: hours,
+            priority: '' // Will be updated when priority is selected
         });
         totalHours += hours;
         console.log(`✅ Selected: ${title} (${hours}h)`);
     } else {
+        // Hide priority dropdown
+        if (prioritySelect) {
+            prioritySelect.style.display = 'none';
+            prioritySelect.value = '';
+        }
+        
         selectedItems = selectedItems.filter(item => item.id !== questionId);
         totalHours -= hours;
         console.log(`❌ Deselected: ${title} (${hours}h)`);
     }
     
     updateCapacitySummary();
+    updateSubmitButton();
+}
+
+// Handle priority changes
+function handlePriorityChange(questionId) {
+    const prioritySelect = document.getElementById(`priority_${questionId}`);
+    const priority = prioritySelect.value;
+    
+    // Update the priority in selectedItems
+    const item = selectedItems.find(item => item.id === questionId);
+    if (item) {
+        item.priority = priority;
+        console.log(`🎯 Priority set: ${item.title} = ${priority}`);
+    }
+    
+    // Update submit button state
     updateSubmitButton();
 }
 
@@ -231,7 +267,10 @@ function updateSubmitButton() {
     const hasEmail = emailInput?.value?.trim() && emailInput.value.includes('@');
     const hasSelections = selectedItems.length > 0;
     
-    const shouldEnable = hasEmail && hasSelections;
+    // Check if all selected items have priorities
+    const allHavePriorities = selectedItems.every(item => item.priority && item.priority !== '');
+    
+    const shouldEnable = hasEmail && hasSelections && allHavePriorities;
     
     submitBtn.disabled = !shouldEnable;
     
@@ -241,6 +280,16 @@ function updateSubmitButton() {
     } else {
         submitBtn.style.opacity = '0.6';
         submitBtn.style.cursor = 'not-allowed';
+    }
+    
+    // Show message if missing priorities
+    if (hasEmail && hasSelections && !allHavePriorities) {
+        const itemsWithoutPriority = selectedItems.filter(item => !item.priority || item.priority === '');
+        if (itemsWithoutPriority.length > 0) {
+            showMessage(`⚠️ Please select priority for all selected items`, 'warning');
+        }
+    } else {
+        clearMessage();
     }
 }
 
@@ -492,7 +541,7 @@ function getFallbackQuestions() {
     };
 }
 
-// Export functions for testing
+// Export functions for testing and global access
 if (typeof window !== 'undefined') {
     window.SprintForm = {
         initializeForm,
@@ -501,4 +550,7 @@ if (typeof window !== 'undefined') {
         selectedItems: () => selectedItems,
         totalHours: () => totalHours
     };
+    
+    // Make priority handler globally accessible
+    window.handlePriorityChange = handlePriorityChange;
 }
