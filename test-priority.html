@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Priority Dropdown</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        .question { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .priority-select { margin-left: 10px; padding: 5px; display: none; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Priority Dropdown</h1>
+    
+    <div class="question">
+        <label>
+            <input type="checkbox" id="test1" onchange="togglePriority('test1')">
+            Test Question 1 (8h)
+        </label>
+        <select id="priority_test1" class="priority-select">
+            <option value="">Select Priority</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+        </select>
+    </div>
+    
+    <div class="question">
+        <label>
+            <input type="checkbox" id="test2" onchange="togglePriority('test2')">
+            Test Question 2 (16h)
+        </label>
+        <select id="priority_test2" class="priority-select">
+            <option value="">Select Priority</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+        </select>
+    </div>
+    
+    <script>
+        function togglePriority(questionId) {
+            const checkbox = document.getElementById(questionId);
+            const prioritySelect = document.getElementById('priority_' + questionId);
+            
+            if (checkbox.checked) {
+                prioritySelect.style.display = 'inline-block';
+                console.log('Showing priority for:', questionId);
+            } else {
+                prioritySelect.style.display = 'none';
+                prioritySelect.value = '';
+                console.log('Hiding priority for:', questionId);
+            }
+        }
+    </script>
+</body>
+</html>
