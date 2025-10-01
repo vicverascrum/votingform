@@ -70,16 +70,23 @@ function renderQuestions() {
     
     container.innerHTML = '';
     
+    let questionNumber = 1; // Counter for checkbox questions only
+    
     questionsData.questions.forEach((question, index) => {
-        const questionElement = createQuestionElement(question, index);
+        const questionElement = createQuestionElement(question, index, questionNumber);
         container.appendChild(questionElement);
+        
+        // Increment counter only for checkbox questions
+        if (question.type === 'checkbox') {
+            questionNumber++;
+        }
     });
     
     console.log(`✅ Rendered ${questionsData.questions.length} questions`);
 }
 
 // Create individual question element
-function createQuestionElement(question, index) {
+function createQuestionElement(question, index, questionNumber) {
     const div = document.createElement('div');
     div.className = 'question-card foundever-fade-in';
     div.style.animationDelay = `${index * 0.1}s`;
@@ -109,7 +116,7 @@ function createQuestionElement(question, index) {
                        data-hours="${question.estimatedHours || 0}"
                        data-title="${question.title}">
                 <div class="checkbox-content">
-                    <label for="${question.id}" class="question-title">${index + 1}. ${question.title}</label>
+                    <label for="${question.id}" class="question-title">${questionNumber}. ${question.title}</label>
                     ${question.description ? `<div style="font-size: 0.85rem; color: #555; margin: 0.3rem 0; line-height: 1.4;">${question.description}</div>` : ''}
                     <div class="question-meta">
                         <span class="hours-badge badge-foundever">${hours}h</span>
