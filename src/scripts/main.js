@@ -145,6 +145,10 @@ function setupEventListeners() {
         }
     });
     
+    // Also update button on any form change
+    document.addEventListener('input', updateSubmitButton);
+    document.addEventListener('change', updateSubmitButton);
+    
     console.log('✅ Event listeners setup complete');
 }
 
@@ -223,15 +227,20 @@ function updateSubmitButton() {
     const submitBtn = document.getElementById('floating-submit');
     if (!submitBtn) return;
     
-    const hasEmail = document.querySelector('input[type="email"]')?.value?.trim();
+    const emailInput = document.querySelector('input[type="email"]');
+    const hasEmail = emailInput?.value?.trim() && emailInput.value.includes('@');
     const hasSelections = selectedItems.length > 0;
     
-    submitBtn.disabled = !hasEmail || !hasSelections;
+    const shouldEnable = hasEmail && hasSelections;
     
-    if (submitBtn.disabled) {
-        submitBtn.style.opacity = '0.6';
-    } else {
+    submitBtn.disabled = !shouldEnable;
+    
+    if (shouldEnable) {
         submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+    } else {
+        submitBtn.style.opacity = '0.6';
+        submitBtn.style.cursor = 'not-allowed';
     }
 }
 
