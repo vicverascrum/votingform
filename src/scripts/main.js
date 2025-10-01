@@ -109,7 +109,7 @@ function createQuestionElement(question, index) {
                        data-hours="${question.estimatedHours || 0}"
                        data-title="${question.title}">
                 <div class="checkbox-content">
-                    <label for="${question.id}" class="question-title">${question.title}</label>
+                    <label for="${question.id}" class="question-title">${index + 1}. ${question.title}</label>
                     ${question.description ? `<div style="font-size: 0.85rem; color: #555; margin: 0.3rem 0; line-height: 1.4;">${question.description}</div>` : ''}
                     <div class="question-meta">
                         <span class="hours-badge badge-foundever">${hours}h</span>
@@ -139,9 +139,10 @@ function setupEventListeners() {
         form.addEventListener('submit', handleFormSubmit);
     }
     
-    // Checkbox changes
+    // Checkbox changes using event delegation
     document.addEventListener('change', function(e) {
         if (e.target.type === 'checkbox' && e.target.dataset.hours !== undefined) {
+            console.log('🔧 Checkbox event detected:', e.target.id);
             handleCheckboxChange(e.target);
         }
     });
@@ -167,6 +168,9 @@ function handleCheckboxChange(checkbox) {
     const questionId = checkbox.id;
     const prioritySelect = document.getElementById(`priority_${questionId}`);
     
+    console.log('🔧 Checkbox changed:', questionId, 'checked:', checkbox.checked);
+    console.log('🔧 Priority select found:', !!prioritySelect);
+    
     if (checkbox.checked) {
         // Check if this would exceed capacity
         if (totalHours + hours > CAPACITY_LIMIT) {
@@ -178,6 +182,9 @@ function handleCheckboxChange(checkbox) {
         // Show priority dropdown
         if (prioritySelect) {
             prioritySelect.style.display = 'inline-block';
+            console.log('✅ Showing priority dropdown for:', questionId);
+        } else {
+            console.error('❌ Priority select not found for:', questionId);
         }
         
         selectedItems.push({
@@ -193,6 +200,7 @@ function handleCheckboxChange(checkbox) {
         if (prioritySelect) {
             prioritySelect.style.display = 'none';
             prioritySelect.value = '';
+            console.log('❌ Hiding priority dropdown for:', questionId);
         }
         
         selectedItems = selectedItems.filter(item => item.id !== questionId);
