@@ -114,7 +114,8 @@ function createQuestionElement(question, index) {
                     <div class="question-meta">
                         <span class="hours-badge badge-foundever">${hours}h</span>
                         <select id="priority_${question.id}" name="priority_${question.id}" 
-                                style="margin-left: 0.5rem; padding: 0.2rem 0.4rem; border: 1px solid #ccc; border-radius: 4px; font-size: 0.8rem; display: none;">
+                                style="margin-left: 0.5rem; padding: 0.2rem 0.4rem; border: 1px solid #ccc; border-radius: 4px; font-size: 0.8rem; display: none;"
+                                onchange="window.handlePriorityChange('${question.id}')">
                             <option value="">Select Priority</option>
                             <option value="high">High</option>
                             <option value="medium">Medium</option>
