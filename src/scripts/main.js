@@ -414,7 +414,7 @@ async function handleFormSubmit(e) {
         const submitBtn = document.getElementById('floating-submit');
         if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.innerHTML = '<span class="btn-icon">📝</span><span class="btn-text">Submit</span>';
+            submitBtn.innerHTML = '<span class="btn-icon">📝</span><span class="btn-text">Submit Form</span>';
         }
     }
 }
