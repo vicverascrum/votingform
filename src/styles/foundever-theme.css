@@ -1,0 +1,253 @@
+/* Foundever Corporate Theme */
+
+:root {
+    --foundever-primary: #0066cc;
+    --foundever-secondary: #004499;
+    --foundever-accent: #00aaff;
+    --foundever-light: #e8f4fd;
+    --foundever-dark: #003366;
+    
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+    
+    --light-bg: #f8f9fa;
+    --border-color: #dee2e6;
+    --text-muted: #6c757d;
+    
+    --shadow-sm: 0 2px 4px rgba(0, 102, 204, 0.1);
+    --shadow-md: 0 4px 16px rgba(0, 102, 204, 0.15);
+    --shadow-lg: 0 8px 32px rgba(0, 102, 204, 0.2);
+    
+    --border-radius: 8px;
+    --border-radius-lg: 16px;
+    
+    --transition: all 0.3s ease;
+}
+
+/* Foundever Brand Colors */
+.foundever-primary { color: var(--foundever-primary); }
+.foundever-secondary { color: var(--foundever-secondary); }
+.foundever-accent { color: var(--foundever-accent); }
+
+.bg-foundever-primary { background-color: var(--foundever-primary); }
+.bg-foundever-secondary { background-color: var(--foundever-secondary); }
+.bg-foundever-light { background-color: var(--foundever-light); }
+
+/* Foundever Gradients */
+.gradient-foundever {
+    background: linear-gradient(135deg, var(--foundever-primary) 0%, var(--foundever-secondary) 100%);
+}
+
+.gradient-foundever-light {
+    background: linear-gradient(135deg, var(--foundever-light) 0%, #ffffff 100%);
+}
+
+/* Foundever Buttons */
+.btn-foundever {
+    background: linear-gradient(135deg, var(--foundever-primary) 0%, var(--foundever-secondary) 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-foundever:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-foundever:active {
+    transform: translateY(0);
+}
+
+.btn-foundever:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Foundever Cards */
+.card-foundever {
+    background: white;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.card-foundever:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-foundever-header {
+    background: var(--foundever-light);
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-foundever-body {
+    padding: 1.5rem;
+}
+
+/* Foundever Form Elements */
+.form-control-foundever {
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.75rem;
+    font-size: 1rem;
+    transition: var(--transition);
+    width: 100%;
+}
+
+.form-control-foundever:focus {
+    outline: none;
+    border-color: var(--foundever-primary);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.form-control-foundever:invalid {
+    border-color: var(--danger-color);
+}
+
+/* Foundever Badges */
+.badge-foundever {
+    background: var(--foundever-primary);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.badge-foundever-light {
+    background: var(--foundever-light);
+    color: var(--foundever-primary);
+}
+
+/* Foundever Alerts */
+.alert-foundever {
+    background: var(--foundever-light);
+    color: var(--foundever-dark);
+    border: 1px solid var(--foundever-primary);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.alert-foundever-success {
+    background: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.alert-foundever-warning {
+    background: #fff3cd;
+    color: #856404;
+    border-color: #ffeaa7;
+}
+
+.alert-foundever-danger {
+    background: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+/* Foundever Progress */
+.progress-foundever {
+    background: var(--light-bg);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-foundever-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--foundever-primary) 0%, var(--foundever-accent) 100%);
+    transition: width 0.3s ease;
+}
+
+/* Foundever Typography */
+.text-foundever-primary { color: var(--foundever-primary); }
+.text-foundever-secondary { color: var(--foundever-secondary); }
+.text-foundever-muted { color: var(--text-muted); }
+
+.heading-foundever {
+    background: linear-gradient(135deg, var(--foundever-primary) 0%, var(--foundever-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+/* Foundever Animations */
+@keyframes foundever-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.foundever-pulse {
+    animation: foundever-pulse 2s infinite;
+}
+
+@keyframes foundever-fade-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.foundever-fade-in {
+    animation: foundever-fade-in 0.5s ease-out;
+}
+
+/* Foundever Utilities */
+.shadow-foundever-sm { box-shadow: var(--shadow-sm); }
+.shadow-foundever-md { box-shadow: var(--shadow-md); }
+.shadow-foundever-lg { box-shadow: var(--shadow-lg); }
+
+.rounded-foundever { border-radius: var(--border-radius); }
+.rounded-foundever-lg { border-radius: var(--border-radius-lg); }
+
+.transition-foundever { transition: var(--transition); }
+
+/* Foundever Layout */
+.container-foundever {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.section-foundever {
+    padding: 3rem 0;
+}
+
+.section-foundever-alt {
+    background: var(--foundever-light);
+}
+
+/* Foundever Mobile Responsive */
+@media (max-width: 768px) {
+    .container-foundever {
+        padding: 0 0.5rem;
+    }
+    
+    .section-foundever {
+        padding: 2rem 0;
+    }
+    
+    .btn-foundever {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .card-foundever-header,
+    .card-foundever-body {
+        padding: 1rem;
+    }
+}

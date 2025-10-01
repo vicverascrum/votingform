@@ -1,0 +1,159 @@
+{
+  "formTitle": "Sprint 24 - Foundever",
+  "subtitle": "Help us prioritize features for the upcoming sprint",
+  "description": "Select the items you believe should be prioritized for Sprint 24. Consider the estimated hours and complexity when making your selections.",
+  "sprintInfo": {
+    "sprintNumber": 24,
+    "capacity": 260,
+    "startDate": "2025-10-14",
+    "endDate": "2025-10-25"
+  },
+  "questions": [
+    {
+      "id": "email",
+      "type": "email",
+      "title": "Your Email Address",
+      "placeholder": "Enter your Foundever email address",
+      "required": true,
+      "validation": {
+        "pattern": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+        "message": "Please enter a valid email address"
+      }
+    },
+    {
+      "id": "question1",
+      "type": "checkbox",
+      "title": "Reporting column alignment",
+      "description": "In reporting, aligning column names without any spacing means that the text within each column header is positioned directly next to one another, with no extra space between them. This alignment can help in creating a cleaner and more compact layout",
+      "estimatedHours": 2,
+      "complexity": "Low",
+      "category": "Reporting"
+    },
+    {
+      "id": "question2",
+      "type": "checkbox",
+      "title": "Holiday functionality in class details",
+      "description": "We can add holiday functionality in the class details to streamline the process of adjusting calendar topics after holidays. Currently, manually transferring each agenda item to the next working day can be cumbersome, especially when clients provide holidays. By allowing users to mark holidays in the calendar, all upcoming topics and agenda items will automatically shift to the next working day, reducing the workload and minimizing errors. This feature would provide a more organized and efficient way to manage class schedules during holidays.",
+      "estimatedHours": 48,
+      "complexity": "Very High",
+      "category": "Calendar Management"
+    },
+    {
+      "id": "question3",
+      "type": "checkbox",
+      "title": "Site column in Class List interface",
+      "description": "As a user, I want to have a site column next to the country column on the Class List interface of the landing page so that I can easily identify and manage classes by both their country and site locations. This will enhance my ability to organize and access class information more efficiently.",
+      "estimatedHours": 4,
+      "complexity": "Low",
+      "category": "UI Enhancement"
+    },
+    {
+      "id": "question4",
+      "type": "checkbox",
+      "title": "EverGrade regional report",
+      "description": "The objective is to develop a report based on the data registered in EverGrade for active users. The report should group by regions (NAC, LATAM, IND) and provide detailed information about active users, classes, enrolled agents, graduated agents, as well as completed and rescheduled students. Report Details: General Data (By Region): NAC, LATAM, IND. Fields: Total of active users, Classes, Enrolled agents, Graduated agents, Completed students, Rescheduled students. Grouping by Regions: The report should group by regions (NAC, LATAM, IND). Detailed Information: For each region, it should include general data and data grouped by months and years. Output Format: The report should be exportable in Excel or PDF format. User Interface: The tool should have an intuitive interface to select regions and generate the report. Data Validation: Validate that the entered data is correct and consistent.",
+      "estimatedHours": 40,
+      "complexity": "High",
+      "category": "Reporting"
+    },
+    {
+      "id": "question5",
+      "type": "checkbox",
+      "title": "Show exceptions as 'NA' in reports",
+      "description": "As a user, I want exceptions to be reflected as \"NA\" instead of showing as 0 or Nil in the Class Graduation Report and in other reports where the Observation Form and Audit Form are a part of the report. This will provide a clearer indication of missing data without causing confusion.",
+      "estimatedHours": 8,
+      "complexity": "Medium",
+      "category": "Reporting"
+    },
+    {
+      "id": "question6",
+      "type": "checkbox",
+      "title": "FST stage dates in Graduation Report",
+      "description": "As a user, I want the FST stage start and end date columns to be added to the Graduation Report so that I can track and monitor the progress of learners through the FST stages more effectively. This will provide valuable insights into the timing and duration of these stages, helping me to better manage learner progression.",
+      "estimatedHours": 8,
+      "complexity": "Medium",
+      "category": "Reporting"
+    },
+    {
+      "id": "question7",
+      "type": "checkbox",
+      "title": "Site-based report filtering",
+      "description": "As a User, I want to be able to filter reports based on the site where the data was collected, so that I can generate site-specific reports efficiently and accurately.",
+      "estimatedHours": 40,
+      "complexity": "High",
+      "category": "Reporting"
+    },
+    {
+      "id": "question8",
+      "type": "checkbox",
+      "title": "Attrition Report headcount correction",
+      "description": "As a User, I need a feature that updates the Attrition Report to reflect the correct headcount numbers. Specifically, I require the removal of the effect of rescheduled learners who have successfully enrolled in a new class to be counted as fallout, and ensure these learners are included in the updated start headcount. Additionally, I need the Stage details information in the CSR report to be corrected, as the current logic for calculating the start headcount in stages is incorrect. This update will help us maintain accurate records and provide better insights into our employee attrition and enrollment trends.",
+      "estimatedHours": 20,
+      "complexity": "Medium",
+      "category": "Reporting"
+    },
+    {
+      "id": "question9",
+      "type": "checkbox",
+      "title": "Associate Evaluation Form grace period",
+      "description": "I want to ensure that the Associate Evaluation Form allows users to complete the scores even after the duration of the stage has passed, providing them with an additional three grace days to submit their feedback. If an trainer misses the initial deadline, the evaluation form should still be labeled as \"late evaluation\" and the last update date should be clearly visible in the raw report. This feature will help maintain transparency and fairness in the evaluation process, allowing associates more flexibility to provide feedback without facing penalties for missing the initial deadline.",
+      "estimatedHours": null,
+      "complexity": "Medium",
+      "category": "Evaluation",
+      "note": "TBD - Hours not specified in requirements"
+    },
+    {
+      "id": "question10",
+      "type": "checkbox",
+      "title": "Cancelled class status in raw report",
+      "description": "I want to ensure that the introduction of the new class status \"cancelled\" is reflected in the raw report as well.",
+      "estimatedHours": null,
+      "complexity": "Low",
+      "category": "Reporting",
+      "note": "TBD - Hours not specified in requirements"
+    },
+    {
+      "id": "question11",
+      "type": "checkbox",
+      "title": "OJT WORKSPACE- Debriefing Raw Report",
+      "description": "OJT WORKSPACE- Debriefing Raw Report",
+      "estimatedHours": null,
+      "complexity": "Medium",
+      "category": "OJT",
+      "note": "TBD - Hours not specified in requirements"
+    }
+  ],
+  "metadata": {
+    "version": "2.1.0",
+    "lastUpdated": "2025-10-01T19:25:00.000Z",
+    "totalQuestions": 11,
+    "totalEstimatedHours": 170,
+    "averageHoursPerItem": 21.25,
+    "complexityDistribution": {
+      "Low": 2,
+      "Medium": 4,
+      "High": 2,
+      "Very High": 1,
+      "TBD": 3
+    },
+    "categoryDistribution": {
+      "Reporting": 5,
+      "Calendar Management": 1,
+      "UI Enhancement": 1,
+      "Evaluation": 1,
+      "OJT": 1
+    }
+  },
+  "recommendations": {
+    "sprint24": {
+      "recommendedItems": ["question1", "question3", "question5", "question6", "question8"],
+      "totalHours": 42,
+      "rationale": "Low to medium complexity items that provide immediate value and fit within sprint capacity"
+    },
+    "futureConsideration": {
+      "recommendedItems": ["question2", "question4", "question7"],
+      "totalHours": 128,
+      "rationale": "High-complexity items requiring dedicated planning and resources"
+    }
+  }
+}
