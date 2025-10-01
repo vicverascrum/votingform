@@ -93,21 +93,40 @@ ${Object.entries(stats.mostSelectedItems)
     .join('\n')}`);
 }
 
-// Add export buttons to page
+// Add export buttons to page (hidden by default)
 function addExportButtons() {
     const container = document.querySelector('.container');
     if (!container) return;
     
     const exportDiv = document.createElement('div');
-    exportDiv.style.cssText = 'margin: 1rem 0; text-align: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;';
+    exportDiv.style.cssText = 'margin: 2rem 0; text-align: center;';
     exportDiv.innerHTML = `
-        <h3 style="margin: 0 0 0.5rem 0; color: #0066cc;">📊 Data Export</h3>
-        <button onclick="showStats()" style="margin: 0.2rem; padding: 0.5rem 1rem; background: #17a2b8; color: white; border: none; border-radius: 4px; cursor: pointer;">📈 Show Stats</button>
-        <button onclick="exportToCSV()" style="margin: 0.2rem; padding: 0.5rem 1rem; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer;">📄 Export CSV</button>
-        <button onclick="exportToJSON()" style="margin: 0.2rem; padding: 0.5rem 1rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">📋 Export JSON</button>
+        <!-- Hidden admin toggle -->
+        <div id="admin-toggle" style="margin: 1rem 0;">
+            <small style="color: #999; cursor: pointer; font-size: 0.7rem;" onclick="toggleAdminPanel()">⚙️</small>
+        </div>
+        
+        <!-- Hidden admin panel -->
+        <div id="admin-panel" style="display: none; padding: 1rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #dee2e6;">
+            <h4 style="margin: 0 0 0.5rem 0; color: #666; font-size: 0.9rem;">Admin Tools</h4>
+            <button onclick="showStats()" style="margin: 0.2rem; padding: 0.4rem 0.8rem; background: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">📈 Stats</button>
+            <button onclick="exportToCSV()" style="margin: 0.2rem; padding: 0.4rem 0.8rem; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">📄 CSV</button>
+            <button onclick="exportToJSON()" style="margin: 0.2rem; padding: 0.4rem 0.8rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">📋 JSON</button>
+            <button onclick="window.open('view-data.html', '_blank')" style="margin: 0.2rem; padding: 0.4rem 0.8rem; background: #17a2b8; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8rem;">👁️ View</button>
+        </div>
     `;
     
     container.appendChild(exportDiv);
+}
+
+// Toggle admin panel
+function toggleAdminPanel() {
+    const panel = document.getElementById('admin-panel');
+    if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+    } else {
+        panel.style.display = 'none';
+    }
 }
 
 // Initialize when page loads
