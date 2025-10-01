@@ -175,6 +175,10 @@ function handleCheckboxChange(checkbox) {
     const questionId = checkbox.id;
     const prioritySelect = document.getElementById(`priority_${questionId}`);
     
+    // Find question number
+    const questionIndex = questionsData.questions.findIndex(q => q.id === questionId);
+    const questionNumber = questionsData.questions.slice(0, questionIndex).filter(q => q.type === 'checkbox').length + 1;
+    
     console.log('🔧 Checkbox changed:', questionId, 'checked:', checkbox.checked);
     console.log('🔧 Priority select found:', !!prioritySelect);
     
@@ -196,12 +200,13 @@ function handleCheckboxChange(checkbox) {
         
         selectedItems.push({
             id: questionId,
+            questionNumber: questionNumber,
             title: title,
             hours: hours,
             priority: '' // Will be updated when priority is selected
         });
         totalHours += hours;
-        console.log(`✅ Selected: ${title} (${hours}h)`);
+        console.log(`✅ Selected: ${questionNumber}. ${title} (${hours}h)`);
     } else {
         // Hide priority dropdown
         if (prioritySelect) {
@@ -212,7 +217,7 @@ function handleCheckboxChange(checkbox) {
         
         selectedItems = selectedItems.filter(item => item.id !== questionId);
         totalHours -= hours;
-        console.log(`❌ Deselected: ${title} (${hours}h)`);
+        console.log(`❌ Deselected: ${questionNumber}. ${title} (${hours}h)`);
     }
     
     updateCapacitySummary();

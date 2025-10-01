@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprint 24 - Simple</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; background: white; padding: 0.5rem; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 1rem; }
+        .question { margin: 15px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }
+        .priority-select { margin-left: 10px; padding: 5px; display: none; }
+        .hours-badge { background: #0066cc; color: white; padding: 2px 8px; border-radius: 12px; font-size: 0.8rem; }
+        .submit-btn { background: #0066cc; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; margin: 20px 0; }
+        .submit-btn:disabled { background: #ccc; cursor: not-allowed; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Sprint 24</h1>
+        <p>Select items and their priorities</p>
+    </div>
+    
+    <form id="simple-form">
+        <div class="question">
+            <label>
+                <input type="email" placeholder="Your email" required style="width: 100%; padding: 8px; margin-bottom: 10px;">
+            </label>
+        </div>
+        
+        <div class="question">
+            <label>
+                <input type="checkbox" id="q1" onchange="togglePriority('q1')">
+                Reporting column alignment <span class="hours-badge">2h</span>
+            </label>
+            <select id="priority_q1" class="priority-select" onchange="updateSubmit()">
+                <option value="">Select Priority</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+        </div>
+        
+        <div class="question">
+            <label>
+                <input type="checkbox" id="q2" onchange="togglePriority('q2')">
+                Holiday functionality <span class="hours-badge">48h</span>
+            </label>
+            <select id="priority_q2" class="priority-select" onchange="updateSubmit()">
+                <option value="">Select Priority</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+        </div>
+        
+        <div class="question">
+            <label>
+                <input type="checkbox" id="q3" onchange="togglePriority('q3')">
+                Site column in Class List <span class="hours-badge">4h</span>
+            </label>
+            <select id="priority_q3" class="priority-select" onchange="updateSubmit()">
+                <option value="">Select Priority</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+            </select>
+        </div>
+        
+        <button type="submit" class="submit-btn" id="submit-btn" disabled>Submit</button>
+    </form>
+    
+    <script>
+        function togglePriority(questionId) {
+            const checkbox = document.getElementById(questionId);
+            const prioritySelect = document.getElementById('priority_' + questionId);
+            
+            if (checkbox.checked) {
+                prioritySelect.style.display = 'inline-block';
+            } else {
+                prioritySelect.style.display = 'none';
+                prioritySelect.value = '';
+            }
+            updateSubmit();
+        }
+        
+        function updateSubmit() {
+            const email = document.querySelector('input[type="email"]').value;
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+            const submitBtn = document.getElementById('submit-btn');
+            
+            let allHavePriorities = true;
+            checkboxes.forEach(cb => {
+                const priority = document.getElementById('priority_' + cb.id).value;
+                if (!priority) allHavePriorities = false;
+            });
+            
+            submitBtn.disabled = !email || checkboxes.length === 0 || !allHavePriorities;
+        }
+        
+        document.getElementById('simple-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Form submitted! (This is just a test)');
+        });
+        
+        document.querySelector('input[type="email"]').addEventListener('input', updateSubmit);
+    </script>
+</body>
+</html>

@@ -59,14 +59,16 @@
                             <th>Items</th>
                             <th>Hours</th>
                             <th>Capacity</th>
-                            <th>Selected Items</th>
+                            <th>Selected Items (with Priority)</th>
                         </tr>
                     </thead>
                     <tbody>
             `;
             
             data.forEach(submission => {
-                const items = submission.selectedItems.map(item => `${item.title} (${item.hours}h)`).join(', ');
+                const items = submission.selectedItems.map(item => 
+                    `${item.questionNumber || '?'}. ${item.title} (${item.hours}h) [${item.priority || 'No Priority'}]`
+                ).join(', ');
                 tableHTML += `
                     <tr>
                         <td>${submission.email}</td>
@@ -90,14 +92,14 @@
                 return;
             }
             
-            const headers = ['Email', 'Date', 'Items Count', 'Total Hours', 'Capacity Used', 'Selected Items'];
+            const headers = ['Email', 'Date', 'Items Count', 'Total Hours', 'Capacity Used', 'Selected Items (with Priority)'];
             const rows = data.map(s => [
                 s.email,
                 new Date(s.submissionDate).toLocaleString(),
                 s.selectedItems.length,
                 s.totalHours,
                 s.capacityUsed + '%',
-                s.selectedItems.map(item => `${item.title} (${item.hours}h)`).join('; ')
+                s.selectedItems.map(item => `${item.questionNumber || '?'}. ${item.title} (${item.hours}h) [${item.priority || 'No Priority'}]`).join('; ')
             ]);
             
             const csvContent = [headers, ...rows]
