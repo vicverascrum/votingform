@@ -103,7 +103,7 @@ function addExportButtons() {
     exportDiv.innerHTML = `
         <!-- Hidden admin toggle -->
         <div id="admin-toggle" style="margin: 1rem 0;">
-            <small style="color: #999; cursor: pointer; font-size: 0.7rem;" onclick="toggleAdminPanel()">⚙️</small>
+            <small style="color: #ccc; cursor: pointer; font-size: 0.6rem; opacity: 0.5;" onclick="toggleAdminPanel()" title="Admin Tools">⚙</small>
         </div>
         
         <!-- Hidden admin panel -->
