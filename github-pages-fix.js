@@ -35,19 +35,20 @@
                     selectedQuestions: formatSelectedQuestions(data.selectedItems)
                 };
                 
-                // Usar proxy CORS para evitar Mixed Content
+                // Usar proxy CORS con GET para enviar datos
+                const params = new URLSearchParams({
+                    action: 'submit',
+                    email: dataToSend.email,
+                    totalHours: dataToSend.totalHours,
+                    selectedQuestions: dataToSend.selectedQuestions
+                });
+                
                 const proxyUrl = 'https://api.allorigins.win/raw?url=';
-                const apiUrl = encodeURIComponent('http://44.223.24.11/api-simple.php?action=submit');
+                const apiUrl = encodeURIComponent(`http://44.223.24.11/api-simple.php?${params}`);
                 
                 alertDiv.innerHTML = '📡 Conectando vía proxy...';
                 
-                const response = await fetch(`${proxyUrl}${apiUrl}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(dataToSend)
-                });
+                const response = await fetch(`${proxyUrl}${apiUrl}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);

@@ -75,18 +75,19 @@
             };
             
             try {
-                // Probar con proxy CORS (como hace el fix)
+                // Probar con proxy CORS usando GET
+                const params = new URLSearchParams({
+                    action: 'submit',
+                    email: testData.email,
+                    totalHours: testData.totalHours,
+                    selectedQuestions: testData.selectedQuestions
+                });
+                
                 const proxyUrl = 'https://api.allorigins.win/raw?url=';
-                const apiUrl = encodeURIComponent('http://44.223.24.11/api-simple.php?action=submit');
+                const apiUrl = encodeURIComponent(`http://44.223.24.11/api-simple.php?${params}`);
                 log(`📡 Conectando vía proxy: ${proxyUrl}`);
                 
-                const response = await fetch(`${proxyUrl}${apiUrl}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(testData)
-                });
+                const response = await fetch(`${proxyUrl}${apiUrl}`);
                 
                 log(`📊 Respuesta HTTP: ${response.status}`);
                 
