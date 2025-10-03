@@ -5,9 +5,9 @@
 window.AWSIntegration = (function() {
     'use strict';
     
-    // ✅ API Gateway HTTPS endpoint
-    const API_URL = 'https://y55nkxxiq9.execute-api.us-east-1.amazonaws.com/prod/submit';
-    const VERSION = '2.2.0-API-GATEWAY';
+    // ✅ Load Balancer HTTPS (cuando esté listo)
+    const API_URL = 'https://votingform-alb-544904986.us-east-1.elb.amazonaws.com/api-simple.php';
+    const VERSION = '2.3.0-LOAD-BALANCER';
     
     console.log('🔧 RDS Integration initialized');
     console.log('📡 API URL:', API_URL);
@@ -60,7 +60,7 @@ window.AWSIntegration = (function() {
             console.log('📊 Formatted data:', dataToSend);
             alertDiv.textContent = 'Conectando a API...';
             
-            const response = await fetch(API_URL, {
+            const response = await fetch(`${API_URL}?action=submit`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
