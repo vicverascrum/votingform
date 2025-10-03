@@ -1,14 +1,26 @@
 // RDS Database Integration for Sprint Prioritization Form
 // Updated to use new RDS API instead of AWS Lambda
+// VERSION: 2.1.0 - RDS Integration
 
 window.AWSIntegration = (function() {
     'use strict';
     
-    // ✅ Nueva configuración para RDS API
-    const API_URL = 'http://44.223.24.11/api-simple.php';
+    // ✅ Nueva configuración para RDS API con HTTPS
+    const API_URL = 'https://44.223.24.11/api-simple.php';
+    const VERSION = '2.1.1-HTTPS';
     
     console.log('🔧 RDS Integration initialized');
     console.log('📡 API URL:', API_URL);
+    console.log('🏷️ Version:', VERSION);
+    
+    // Mostrar versión en la página
+    document.addEventListener('DOMContentLoaded', function() {
+        const versionEl = document.createElement('div');
+        versionEl.id = 'version-info';
+        versionEl.style.cssText = 'position: fixed; bottom: 10px; right: 10px; background: rgba(0,123,255,0.8); color: white; padding: 5px 10px; border-radius: 15px; font-size: 12px; z-index: 9999;';
+        versionEl.textContent = `v${VERSION}`;
+        document.body.appendChild(versionEl);
+    });
     
     // Función para formatear las preguntas seleccionadas
     function formatSelectedQuestions(selectedItems) {
@@ -28,6 +40,8 @@ window.AWSIntegration = (function() {
     // Submit data to RDS Database
     async function submitToAWS(data) {
         console.log('📤 Submitting to RDS Database:', data);
+        console.log('🌐 Current protocol:', window.location.protocol);
+        console.log('🌐 Current host:', window.location.host);
         
         try {
             // Preparar datos para la nueva API
@@ -68,6 +82,13 @@ window.AWSIntegration = (function() {
             
         } catch (error) {
             console.error('❌ RDS submission error:', error);
+            
+            // Detectar errores CORS
+            if (error.message.includes('CORS') || error.message.includes('fetch')) {
+                console.error('🚨 CORS Error detected - GitHub Pages (HTTPS) cannot access HTTP API');
+                throw new Error('CORS Error: GitHub Pages requires HTTPS API. Contact admin to enable HTTPS on server.');
+            }
+            
             throw error;
         }
     }
