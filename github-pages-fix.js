@@ -35,20 +35,13 @@
                     selectedQuestions: formatSelectedQuestions(data.selectedItems)
                 };
                 
-                // Usar proxy CORS con GET para enviar datos
-                const params = new URLSearchParams({
-                    action: 'submit',
-                    email: dataToSend.email,
-                    totalHours: dataToSend.totalHours,
-                    selectedQuestions: dataToSend.selectedQuestions
-                });
-                
-                const proxyUrl = 'https://api.allorigins.win/raw?url=';
-                const apiUrl = encodeURIComponent(`http://44.223.24.11/api-simple.php?${params}`);
+                // Usar proxy CORS alternativo
+                const proxyUrl = 'https://corsproxy.io/?';
+                const apiUrl = `http://44.223.24.11/api-simple.php?action=submit&email=${encodeURIComponent(dataToSend.email)}&totalHours=${dataToSend.totalHours}&selectedQuestions=${encodeURIComponent(dataToSend.selectedQuestions)}`;
                 
                 alertDiv.innerHTML = '📡 Conectando vía proxy...';
                 
-                const response = await fetch(`${proxyUrl}${apiUrl}`);
+                const response = await fetch(`${proxyUrl}${encodeURIComponent(apiUrl)}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP ${response.status}`);
