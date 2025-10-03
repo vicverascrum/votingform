@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit Vote</title>
+</head>
+<body>
+    <script>
+    // Enviar datos via GitHub Issues API (funciona desde GitHub Pages)
+    async function submitVote(data) {
+        const issueData = {
+            title: `Vote: ${data.email}`,
+            body: `**Email:** ${data.email}\n**Total Hours:** ${data.totalHours}\n**Questions:** ${data.selectedQuestions}\n**Timestamp:** ${new Date().toISOString()}`,
+            labels: ['vote-submission']
+        };
+        
+        // Usar GitHub API (público, funciona desde GitHub Pages)
+        const response = await fetch('https://api.github.com/repos/vicverascrum/votingform/issues', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'token ghp_PLACEHOLDER' // Necesitas un token
+            },
+            body: JSON.stringify(issueData)
+        });
+        
+        return response.json();
+    }
+    </script>
+</body>
+</html>

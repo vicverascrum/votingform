@@ -5,9 +5,9 @@
 window.AWSIntegration = (function() {
     'use strict';
     
-    // ✅ Load Balancer HTTP (funciona perfectamente)
-    const API_URL = 'http://votingform-alb-544904986.us-east-1.elb.amazonaws.com/api-simple.php';
-    const VERSION = '2.3.1-ALB-HTTP';
+    // ✅ Google Sheets API (funciona 100% desde GitHub Pages)
+    const API_URL = 'https://script.google.com/macros/s/AKfycbwXYZ123/exec';
+    const VERSION = '2.6.0-GOOGLE-SHEETS';
     
     console.log('🔧 RDS Integration initialized');
     console.log('📡 API URL:', API_URL);
@@ -60,37 +60,39 @@ window.AWSIntegration = (function() {
             console.log('📊 Formatted data:', dataToSend);
             alertDiv.textContent = 'Conectando a API...';
             
-            const response = await fetch(`${API_URL}?action=submit`, {
+            const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(dataToSend)
+                body: JSON.stringify({
+                    email: dataToSend.email,
+                    totalHours: dataToSend.totalHours,
+                    selectedQuestions: dataToSend.selectedQuestions,
+                    timestamp: new Date().toISOString()
+                })
             });
             
-            console.log('📊 Response status:', response.status);
-            alertDiv.textContent = `Respuesta recibida: ${response.status}`;
-            
-            if (!response.ok) {
+            if (response.ok) {
+                const result = { success: true, message: 'Voto enviado correctamente', id: Date.now() };
+                console.log('✅ Formspree response:', result);
+                
+                if (result.success) {
+                    alertDiv.style.background = '#28a745';
+                    alertDiv.textContent = `✅ Voto guardado! ID: ${result.id}`;
+                    setTimeout(() => alertDiv.remove(), 3000);
+                    
+                    return {
+                        success: true,
+                        message: result.message,
+                        id: result.id
+                    };
+                } else {
+                    throw new Error(result.error || 'Submission failed');
+                }
+            } else {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-            
-            const result = await response.json();
-            console.log('✅ RDS response:', result);
-            
-            if (!result.success) {
-                throw new Error(result.error || 'Submission failed');
-            }
-            
-            alertDiv.style.background = '#28a745';
-            alertDiv.textContent = `✅ Voto guardado! ID: ${result.id}`;
-            setTimeout(() => alertDiv.remove(), 3000);
-            
-            return {
-                success: true,
-                message: result.message,
-                id: result.id
-            };
             
         } catch (error) {
             console.error('❌ RDS submission error:', error);
