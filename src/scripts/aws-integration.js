@@ -5,10 +5,9 @@
 window.AWSIntegration = (function() {
     'use strict';
     
-    // ✅ Nueva configuración para RDS API con HTTPS y fallback
-    const API_URL = 'https://44.223.24.11/api-simple.php';
-    const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
-    const VERSION = '2.1.2-CORS-FIX';
+    // ✅ API Gateway HTTPS endpoint
+    const API_URL = 'https://y55nkxxiq9.execute-api.us-east-1.amazonaws.com/prod/submit';
+    const VERSION = '2.2.0-API-GATEWAY';
     
     console.log('🔧 RDS Integration initialized');
     console.log('📡 API URL:', API_URL);
@@ -61,7 +60,7 @@ window.AWSIntegration = (function() {
             console.log('📊 Formatted data:', dataToSend);
             alertDiv.textContent = 'Conectando a API...';
             
-            const response = await fetch(`${API_URL}?action=submit`, {
+            const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
