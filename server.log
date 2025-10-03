@@ -12,3 +12,18 @@
 ::1 - - [03/Oct/2025 08:12:18] "GET /src/data/questions.json?v=1759497138602 HTTP/1.1" 200 -
 ::1 - - [03/Oct/2025 08:12:18] code 404, message File not found
 ::1 - - [03/Oct/2025 08:12:18] "GET /favicon.ico HTTP/1.1" 404 -
+::1 - - [03/Oct/2025 10:58:26] "GET /src/data/questions.json?v=1759507106484 HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 10:58:32] "GET /view-data.html HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:13:33] "GET /validate-integration.html HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:13:33] "GET /src/scripts/aws-integration.js HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:13:33] "GET /config.js HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:13:33] code 404, message File not found
+::1 - - [03/Oct/2025 11:13:33] "GET /favicon.ico HTTP/1.1" 404 -
+::1 - - [03/Oct/2025 11:14:32] "GET / HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:14:32] "GET /src/styles/style.css HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:14:32] "GET /src/scripts/main.js HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:14:32] "GET /src/styles/foundever-theme.css HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:14:32] "GET /logoevergrade2.png HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:14:32] "GET /src/scripts/aws-integration.js HTTP/1.1" 304 -
+::1 - - [03/Oct/2025 11:14:32] "GET /export-data.js HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:14:32] "GET /src/data/questions.json?v=1759508072545 HTTP/1.1" 200 -

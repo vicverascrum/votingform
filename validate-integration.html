@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validación de Integración - VotingForm</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        .btn { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
+        .btn:hover { background: #0056b3; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Validación de Integración VotingForm → RDS</h1>
+        
+        <div class="test-section info">
+            <h3>📋 Estado de la Validación</h3>
+            <p id="status">Iniciando validación...</p>
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Pruebas de Conectividad</h3>
+            <button class="btn" onclick="testAPIConnection()">Test API Connection</button>
+            <button class="btn" onclick="testFormIntegration()">Test Form Integration</button>
+            <button class="btn" onclick="testSubmission()">Test Vote Submission</button>
+            <button class="btn" onclick="loadResults()">Load All Results</button>
+            <div id="test-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>📊 Resultados de Votación</h3>
+            <div id="voting-results"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>🔧 Logs de Debug</h3>
+            <pre id="debug-logs"></pre>
+        </div>
+    </div>
+
+    <!-- Cargar scripts del formulario -->
+    <script src="config.js"></script>
+    <script src="src/scripts/aws-integration.js"></script>
+
+    <script>
+        let logs = [];
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logMessage = `[${timestamp}] ${message}`;
+            logs.push(logMessage);
+            document.getElementById('debug-logs').textContent = logs.join('\n');
+            console.log(logMessage);
+        }
+
+        function updateStatus(message, type = 'info') {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = message;
+            statusEl.className = type;
+        }
+
+        function showResult(message, type = 'info') {
+            const resultsEl = document.getElementById('test-results');
+            const div = document.createElement('div');
+            div.className = `test-section ${type}`;
+            div.innerHTML = `<p>${message}</p>`;
+            resultsEl.appendChild(div);
+        }
+
+        async function testAPIConnection() {
+            log('🧪 Testing API connection...');
+            updateStatus('Testing API connection...', 'info');
+            
+            try {
+                if (window.AWSIntegration && window.AWSIntegration.test) {
+                    const result = await window.AWSIntegration.test();
+                    if (result) {
+                        log('✅ API connection successful');
+                        showResult('✅ API Connection: SUCCESS', 'success');
+                        updateStatus('API connection successful', 'success');
+                    } else {
+                        log('❌ API connection failed');
+                        showResult('❌ API Connection: FAILED', 'error');
+                        updateStatus('API connection failed', 'error');
+                    }
+                } else {
+                    log('❌ AWSIntegration not found');
+                    showResult('❌ AWSIntegration object not found', 'error');
+                    updateStatus('Integration object not found', 'error');
+                }
+            } catch (error) {
+                log(`❌ API test error: ${error.message}`);
+                showResult(`❌ API Test Error: ${error.message}`, 'error');
+                updateStatus('API test failed', 'error');
+            }
+        }
+
+        async function testFormIntegration() {
+            log('🔍 Testing form integration...');
+            updateStatus('Testing form integration...', 'info');
+            
+            const checks = [
+                { name: 'AWSIntegration object', test: () => !!window.AWSIntegration },
+                { name: 'submit method', test: () => typeof window.AWSIntegration?.submit === 'function' },
+                { name: 'submitToAWS method', test: () => typeof window.AWSIntegration?.submitToAWS === 'function' },
+                { name: 'query method', test: () => typeof window.AWSIntegration?.query === 'function' },
+                { name: 'test method', test: () => typeof window.AWSIntegration?.test === 'function' }
+            ];
+
+            let allPassed = true;
+            checks.forEach(check => {
+                const passed = check.test();
+                const status = passed ? '✅' : '❌';
+                log(`${status} ${check.name}: ${passed ? 'OK' : 'MISSING'}`);
+                showResult(`${status} ${check.name}: ${passed ? 'OK' : 'MISSING'}`, passed ? 'success' : 'error');
+                if (!passed) allPassed = false;
+            });
+
+            updateStatus(allPassed ? 'Form integration OK' : 'Form integration has issues', allPassed ? 'success' : 'error');
+        }
+
+        async function testSubmission() {
+            log('📤 Testing vote submission...');
+            updateStatus('Testing vote submission...', 'info');
+            
+            const testData = {
+                email: 'test-validation@foundever.com',
+                totalHours: 75,
+                selectedItems: [
+                    { id: 'question1', title: 'Test Question 1', estimatedHours: 25, complexity: 'Low' },
+                    { id: 'question2', title: 'Test Question 2', estimatedHours: 50, complexity: 'High' }
+                ]
+            };
+
+            try {
+                if (window.AWSIntegration && window.AWSIntegration.submitToAWS) {
+                    const result = await window.AWSIntegration.submitToAWS(testData);
+                    log(`✅ Submission successful: ID ${result.id}`);
+                    showResult(`✅ Vote Submission: SUCCESS (ID: ${result.id})`, 'success');
+                    updateStatus('Vote submission successful', 'success');
+                } else {
+                    log('❌ submitToAWS method not available');
+                    showResult('❌ submitToAWS method not available', 'error');
+                    updateStatus('Submission method not available', 'error');
+                }
+            } catch (error) {
+                log(`❌ Submission error: ${error.message}`);
+                showResult(`❌ Submission Error: ${error.message}`, 'error');
+                updateStatus('Vote submission failed', 'error');
+            }
+        }
+
+        async function loadResults() {
+            log('📥 Loading all results...');
+            updateStatus('Loading results...', 'info');
+            
+            try {
+                if (window.AWSIntegration && window.AWSIntegration.query) {
+                    const result = await window.AWSIntegration.query();
+                    log(`✅ Loaded ${result.count} results`);
+                    
+                    const resultsEl = document.getElementById('voting-results');
+                    resultsEl.innerHTML = `
+                        <h4>📊 Total Votes: ${result.count}</h4>
+                        <table style="width:100%; border-collapse: collapse;">
+                            <tr style="background:#f8f9fa;">
+                                <th style="border:1px solid #ddd; padding:8px;">Email</th>
+                                <th style="border:1px solid #ddd; padding:8px;">Date</th>
+                                <th style="border:1px solid #ddd; padding:8px;">Hours</th>
+                                <th style="border:1px solid #ddd; padding:8px;">Questions</th>
+                            </tr>
+                            ${result.data.map(vote => `
+                                <tr>
+                                    <td style="border:1px solid #ddd; padding:8px;">${vote.email}</td>
+                                    <td style="border:1px solid #ddd; padding:8px;">${vote.fecha_envio}</td>
+                                    <td style="border:1px solid #ddd; padding:8px;">${vote.total_horas}h</td>
+                                    <td style="border:1px solid #ddd; padding:8px; font-size:12px;">${vote.preguntas_seleccionadas}</td>
+                                </tr>
+                            `).join('')}
+                        </table>
+                    `;
+                    
+                    showResult(`✅ Results Loaded: ${result.count} votes`, 'success');
+                    updateStatus('Results loaded successfully', 'success');
+                } else {
+                    log('❌ query method not available');
+                    showResult('❌ query method not available', 'error');
+                    updateStatus('Query method not available', 'error');
+                }
+            } catch (error) {
+                log(`❌ Query error: ${error.message}`);
+                showResult(`❌ Query Error: ${error.message}`, 'error');
+                updateStatus('Failed to load results', 'error');
+            }
+        }
+
+        // Auto-run basic tests on load
+        document.addEventListener('DOMContentLoaded', function() {
+            log('🚀 Starting validation...');
+            setTimeout(() => {
+                testAPIConnection();
+                setTimeout(() => testFormIntegration(), 1000);
+            }, 500);
+        });
+    </script>
+</body>
+</html>

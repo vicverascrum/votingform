@@ -1,0 +1,33 @@
+🎉 BASE DE DATOS CREADA EXITOSAMENTE!
+
+📊 Detalles de Conexión:
+- Endpoint: votingform-results.czi2i0iyyp0m.us-east-1.rds.amazonaws.com
+- Puerto: 3306
+- Base de datos: sprint_voting
+- Usuario: admin
+- Contraseña: VotingForm2025!
+
+✅ Estado: ACTIVA y lista para usar
+
+📋 Próximos pasos:
+1. Crear las tablas (necesitas MySQL client o herramienta web)
+2. Conectar tu formulario a esta base de datos
+3. Ver los resultados de todos los usuarios
+
+🔧 Para crear las tablas, puedes usar:
+- MySQL Workbench
+- phpMyAdmin
+- Cualquier cliente MySQL
+
+📝 SQL para crear tablas:
+USE sprint_voting;
+
+CREATE TABLE voting_results (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    selected_items JSON NOT NULL,
+    total_hours INT NOT NULL,
+    capacity_percentage DECIMAL(5,2) NOT NULL,
+    sprint_number INT NOT NULL DEFAULT 24,
+    submission_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -1,0 +1,40 @@
+🔗 DATOS DE CONEXIÓN - BASE DE DATOS RDS
+
+📊 INFORMACIÓN DE CONEXIÓN:
+==========================
+
+Host/Endpoint: votingform-results.czi2i0iyyp0m.us-east-1.rds.amazonaws.com
+Puerto: 3306
+Base de datos: sprint_voting
+Usuario: admin
+Contraseña: VotingForm2025!
+
+🔧 CADENA DE CONEXIÓN:
+=====================
+
+MySQL:
+mysql -h votingform-results.czi2i0iyyp0m.us-east-1.rds.amazonaws.com -u admin -pVotingForm2025! sprint_voting
+
+PHP:
+$host = 'votingform-results.czi2i0iyyp0m.us-east-1.rds.amazonaws.com';
+$dbname = 'sprint_voting';
+$username = 'admin';
+$password = 'VotingForm2025!';
+$port = 3306;
+
+Python:
+config = {
+    'host': 'votingform-results.czi2i0iyyp0m.us-east-1.rds.amazonaws.com',
+    'user': 'admin',
+    'password': 'VotingForm2025!',
+    'database': 'sprint_voting',
+    'port': 3306
+}
+
+📋 TABLAS DISPONIBLES:
+=====================
+- voting_results (tabla principal)
+- question_selections (detalles por pregunta)
+
+✅ ESTADO: ACTIVA Y FUNCIONANDO
+📊 Registros actuales: 2 votaciones guardadas
