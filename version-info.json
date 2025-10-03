@@ -1,0 +1,17 @@
+{
+  "version": "2.1.1-HTTPS",
+  "lastUpdate": "2025-10-03T16:22:00Z",
+  "apiUrl": "https://44.223.24.11/api-simple.php",
+  "status": "HTTPS Enabled - GitHub Pages Compatible",
+  "changes": [
+    "Added HTTPS support for GitHub Pages compatibility",
+    "Fixed CORS issues",
+    "Added version display in form",
+    "Enhanced error detection"
+  ],
+  "deployment": {
+    "local": "http://localhost:8080",
+    "github": "https://vicverascrum.github.io/votingform/",
+    "api": "https://44.223.24.11/api-simple.php"
+  }
+}
