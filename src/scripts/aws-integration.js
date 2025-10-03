@@ -5,9 +5,10 @@
 window.AWSIntegration = (function() {
     'use strict';
     
-    // ✅ Nueva configuración para RDS API con HTTPS
+    // ✅ Nueva configuración para RDS API con HTTPS y fallback
     const API_URL = 'https://44.223.24.11/api-simple.php';
-    const VERSION = '2.1.1-HTTPS';
+    const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+    const VERSION = '2.1.2-CORS-FIX';
     
     console.log('🔧 RDS Integration initialized');
     console.log('📡 API URL:', API_URL);
@@ -43,6 +44,12 @@ window.AWSIntegration = (function() {
         console.log('🌐 Current protocol:', window.location.protocol);
         console.log('🌐 Current host:', window.location.host);
         
+        // Mostrar alerta visible para debugging
+        const alertDiv = document.createElement('div');
+        alertDiv.style.cssText = 'position: fixed; top: 50px; left: 10px; background: #007bff; color: white; padding: 10px; border-radius: 5px; z-index: 10000; max-width: 300px;';
+        alertDiv.textContent = 'Enviando voto a base de datos...';
+        document.body.appendChild(alertDiv);
+        
         try {
             // Preparar datos para la nueva API
             const dataToSend = {
@@ -52,6 +59,7 @@ window.AWSIntegration = (function() {
             };
             
             console.log('📊 Formatted data:', dataToSend);
+            alertDiv.textContent = 'Conectando a API...';
             
             const response = await fetch(`${API_URL}?action=submit`, {
                 method: 'POST',
@@ -62,6 +70,7 @@ window.AWSIntegration = (function() {
             });
             
             console.log('📊 Response status:', response.status);
+            alertDiv.textContent = `Respuesta recibida: ${response.status}`;
             
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -74,6 +83,10 @@ window.AWSIntegration = (function() {
                 throw new Error(result.error || 'Submission failed');
             }
             
+            alertDiv.style.background = '#28a745';
+            alertDiv.textContent = `✅ Voto guardado! ID: ${result.id}`;
+            setTimeout(() => alertDiv.remove(), 3000);
+            
             return {
                 success: true,
                 message: result.message,
@@ -83,11 +96,42 @@ window.AWSIntegration = (function() {
         } catch (error) {
             console.error('❌ RDS submission error:', error);
             
-            // Detectar errores CORS
-            if (error.message.includes('CORS') || error.message.includes('fetch')) {
-                console.error('🚨 CORS Error detected - GitHub Pages (HTTPS) cannot access HTTP API');
-                throw new Error('CORS Error: GitHub Pages requires HTTPS API. Contact admin to enable HTTPS on server.');
+            // Intentar con proxy CORS como fallback
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                console.log('🔄 Trying CORS proxy fallback...');
+                alertDiv.textContent = 'Intentando método alternativo...';
+                
+                try {
+                    const proxyResponse = await fetch(`${CORS_PROXY}${API_URL}?action=submit`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify(dataToSend)
+                    });
+                    
+                    const proxyResult = await proxyResponse.json();
+                    
+                    if (proxyResult.success) {
+                        alertDiv.style.background = '#28a745';
+                        alertDiv.textContent = `✅ Voto guardado (proxy)! ID: ${proxyResult.id}`;
+                        setTimeout(() => alertDiv.remove(), 3000);
+                        
+                        return {
+                            success: true,
+                            message: proxyResult.message + ' (via proxy)',
+                            id: proxyResult.id
+                        };
+                    }
+                } catch (proxyError) {
+                    console.error('❌ Proxy fallback failed:', proxyError);
+                }
             }
+            
+            alertDiv.style.background = '#dc3545';
+            alertDiv.textContent = `❌ Error: ${error.message}`;
+            setTimeout(() => alertDiv.remove(), 5000);
             
             throw error;
         }
