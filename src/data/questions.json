@@ -121,13 +121,23 @@
       "complexity": "Medium",
       "category": "OJT",
       "note": "TBD - Hours not specified in requirements"
+    },
+    {
+      "id": "question12",
+      "type": "checkbox",
+      "title": "OJT Workspace- Action Plans and Contact Logs",
+      "description": "OJT Workspace- Action Plans and Contact Logs",
+      "estimatedHours": 200,
+      "complexity": "Very High",
+      "category": "OJT",
+      "note": "Large development effort - 200 hours estimated"
     }
   ],
   "metadata": {
     "version": "2.1.0",
-    "lastUpdated": "2025-10-01T19:25:00.000Z",
-    "totalQuestions": 11,
-    "totalEstimatedHours": 170,
+    "lastUpdated": "2025-10-03T08:11:00.000Z",
+    "totalQuestions": 12,
+    "totalEstimatedHours": 370,
     "averageHoursPerItem": 21.25,
     "complexityDistribution": {
       "Low": 2,

@@ -8,3 +8,7 @@
 ::1 - - [03/Oct/2025 08:06:30] "GET /src/scripts/aws-integration.js HTTP/1.1" 200 -
 ::1 - - [03/Oct/2025 08:06:30] "GET /export-data.js HTTP/1.1" 200 -
 ::1 - - [03/Oct/2025 08:06:30] "GET /src/data/questions.json?v=1759496790400 HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 08:12:18] "GET / HTTP/1.1" 304 -
+::1 - - [03/Oct/2025 08:12:18] "GET /src/data/questions.json?v=1759497138602 HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 08:12:18] code 404, message File not found
+::1 - - [03/Oct/2025 08:12:18] "GET /favicon.ico HTTP/1.1" 404 -
