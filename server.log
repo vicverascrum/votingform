@@ -27,3 +27,6 @@
 ::1 - - [03/Oct/2025 11:14:32] "GET /src/scripts/aws-integration.js HTTP/1.1" 304 -
 ::1 - - [03/Oct/2025 11:14:32] "GET /export-data.js HTTP/1.1" 200 -
 ::1 - - [03/Oct/2025 11:14:32] "GET /src/data/questions.json?v=1759508072545 HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:23:43] "GET / HTTP/1.1" 304 -
+::1 - - [03/Oct/2025 11:23:43] "GET /src/scripts/aws-integration.js HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 11:23:43] "GET /src/data/questions.json?v=1759508623826 HTTP/1.1" 200 -
