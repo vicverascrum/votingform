@@ -5,9 +5,9 @@
 window.AWSIntegration = (function() {
     'use strict';
     
-    // ✅ Load Balancer HTTPS (cuando esté listo)
-    const API_URL = 'https://votingform-alb-544904986.us-east-1.elb.amazonaws.com/api-simple.php';
-    const VERSION = '2.3.0-LOAD-BALANCER';
+    // ✅ Load Balancer HTTP (funciona perfectamente)
+    const API_URL = 'http://votingform-alb-544904986.us-east-1.elb.amazonaws.com/api-simple.php';
+    const VERSION = '2.3.1-ALB-HTTP';
     
     console.log('🔧 RDS Integration initialized');
     console.log('📡 API URL:', API_URL);
