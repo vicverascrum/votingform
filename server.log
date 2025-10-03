@@ -1,29 +1,10 @@
-Traceback (most recent call last):
-  File "<frozen runpy>", line 198, in _run_module_as_main
-  File "<frozen runpy>", line 88, in _run_code
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/server.py", line 1323, in <module>
-    test(
-    ~~~~^
-        HandlerClass=handler_class,
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<3 lines>...
-        protocol=args.protocol,
-        ^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/server.py", line 1270, in test
-    with ServerClass(addr, HandlerClass) as httpd:
-         ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 457, in __init__
-    self.server_bind()
-    ~~~~~~~~~~~~~~~~^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/server.py", line 1317, in server_bind
-    return super().server_bind()
-           ~~~~~~~~~~~~~~~~~~~^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/http/server.py", line 136, in server_bind
-    socketserver.TCPServer.server_bind(self)
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/socketserver.py", line 478, in server_bind
-    self.socket.bind(self.server_address)
-    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
-OSError: [Errno 48] Address already in use
+::1 - - [03/Oct/2025 08:06:28] "GET / HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 08:06:29] "GET / HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 08:06:30] "GET /src/styles/style.css HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 08:06:30] "GET /config.js HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 08:06:30] "GET /src/scripts/main.js HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 08:06:30] "GET /src/styles/foundever-theme.css HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 08:06:30] "GET /logoevergrade2.png HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 08:06:30] "GET /src/scripts/aws-integration.js HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 08:06:30] "GET /export-data.js HTTP/1.1" 200 -
+::1 - - [03/Oct/2025 08:06:30] "GET /src/data/questions.json?v=1759496790400 HTTP/1.1" 200 -
