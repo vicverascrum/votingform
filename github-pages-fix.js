@@ -35,14 +35,14 @@
                     selectedQuestions: formatSelectedQuestions(data.selectedItems)
                 };
                 
-                // Usar HTTP directo (sin SSL)
-                const httpUrl = 'http://44.223.24.11/api-simple.php';
+                // Usar proxy CORS para evitar Mixed Content
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const apiUrl = encodeURIComponent('http://44.223.24.11/api-simple.php?action=submit');
                 
-                alertDiv.innerHTML = '📡 Conectando a base de datos...';
+                alertDiv.innerHTML = '📡 Conectando vía proxy...';
                 
-                const response = await fetch(`${httpUrl}?action=submit`, {
+                const response = await fetch(`${proxyUrl}${apiUrl}`, {
                     method: 'POST',
-                    mode: 'cors',
                     headers: {
                         'Content-Type': 'application/json',
                     },

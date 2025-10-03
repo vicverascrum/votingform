@@ -75,13 +75,13 @@
             };
             
             try {
-                // Probar HTTP directo (como hace el fix)
-                const httpUrl = 'http://44.223.24.11/api-simple.php';
-                log(`📡 Conectando a: ${httpUrl}`);
+                // Probar con proxy CORS (como hace el fix)
+                const proxyUrl = 'https://api.allorigins.win/raw?url=';
+                const apiUrl = encodeURIComponent('http://44.223.24.11/api-simple.php?action=submit');
+                log(`📡 Conectando vía proxy: ${proxyUrl}`);
                 
-                const response = await fetch(`${httpUrl}?action=submit`, {
+                const response = await fetch(`${proxyUrl}${apiUrl}`, {
                     method: 'POST',
-                    mode: 'cors',
                     headers: {
                         'Content-Type': 'application/json',
                     },
