@@ -1,19 +1,13 @@
-// Sprint Prioritization Form - Main JavaScript
-// Handles form logic, validation, and user interactions
+// Sprint Prioritization Form - Main JavaScript (FIXED VERSION)
+// Fixed: Now includes complexity and estimatedHours in selectedItems
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Sprint Prioritization Form loaded');
-    initializeForm();
-});
+'use strict';
 
-// Debug logging function
+// Debug mode
+const DEBUG = true;
 function debugLog(message) {
-    console.log(message);
-    const debugLog = document.getElementById('debug-log');
-    if (debugLog) {
-        const timestamp = new Date().toLocaleTimeString();
-        debugLog.innerHTML += `<br>[${timestamp}] ${message}`;
-        debugLog.scrollTop = debugLog.scrollHeight;
+    if (DEBUG) {
+        console.log(`🐛 [DEBUG] ${message}`);
     }
 }
 
@@ -40,179 +34,127 @@ async function initializeForm() {
 async function loadQuestions() {
     try {
         console.log('📄 Loading questions...');
-        
-        const response = await fetch('src/data/questions.json?v=' + Date.now());
+        const response = await fetch('src/data/questions.json');
         if (!response.ok) {
-            throw new Error('Failed to load questions.json');
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         questionsData = await response.json();
-        console.log(`✅ Loaded ${questionsData.questions.length} questions`);
+        console.log('✅ Questions loaded:', questionsData.questions?.length || 0);
         
         renderQuestions();
         updateFormTitle();
         
     } catch (error) {
-        console.warn('⚠️ Failed to load questions.json, using fallback data');
-        questionsData = getFallbackQuestions();
-        renderQuestions();
-        updateFormTitle();
+        console.error('❌ Error loading questions:', error);
+        throw new Error('Failed to load questions: ' + error.message);
     }
 }
 
-// Render questions in the form
+// Render questions in the DOM
 function renderQuestions() {
     const container = document.getElementById('questions-container');
-    if (!container) {
-        console.error('❌ Questions container not found');
+    if (!container || !questionsData?.questions) {
+        console.error('❌ Questions container or data not found');
         return;
     }
     
-    container.innerHTML = '';
+    let html = '<div class="card-foundever-body">';
     
-    let questionNumber = 1; // Counter for checkbox questions only
-    
-    questionsData.questions.forEach((question, index) => {
-        const questionElement = createQuestionElement(question, index, questionNumber);
-        container.appendChild(questionElement);
-        
-        // Increment counter only for checkbox questions
-        if (question.type === 'checkbox') {
-            questionNumber++;
-        }
-    });
-    
-    console.log(`✅ Rendered ${questionsData.questions.length} questions`);
-}
-
-// Create individual question element
-function createQuestionElement(question, index, questionNumber) {
-    const div = document.createElement('div');
-    div.className = 'question-card foundever-fade-in';
-    div.style.animationDelay = `${index * 0.1}s`;
-    
-    if (question.type === 'email') {
-        div.innerHTML = `
-            <div class="question-title">${question.title}</div>
-            <div class="input-group">
-                <input type="email" 
-                       id="${question.id}" 
-                       name="${question.id}" 
-                       class="text-input form-control-foundever" 
-                       placeholder="${question.placeholder || 'Enter your email'}" 
-                       ${question.required ? 'required' : ''}>
+    // Add email field first
+    const emailQuestion = questionsData.questions.find(q => q.type === 'email');
+    if (emailQuestion) {
+        html += `
+            <div class="question-item email-question">
+                <label class="question-title" for="email">${emailQuestion.title}</label>
+                <input type="email" id="email" name="email" 
+                       placeholder="${emailQuestion.placeholder}" 
+                       required class="form-input">
             </div>
         `;
-    } else if (question.type === 'checkbox') {
-        const hours = question.estimatedHours || 'TBD';
-        const complexity = question.complexity || '';
-        const note = question.note || '';
-        
-        div.innerHTML = `
-            <div class="checkbox-group">
-                <input type="checkbox" 
-                       id="${question.id}" 
-                       name="${question.id}" 
-                       data-hours="${question.estimatedHours || 0}"
-                       data-title="${question.title}">
-                <div class="checkbox-content">
-                    <label for="${question.id}" class="question-title">${questionNumber}. ${question.title}</label>
-                    ${question.description ? `<div style="font-size: 0.85rem; color: #555; margin: 0.3rem 0; line-height: 1.4;">${question.description}</div>` : ''}
+    }
+    
+    // Add other questions
+    questionsData.questions.forEach((question, index) => {
+        if (question.type === 'checkbox') {
+            html += `
+                <div class="question-item" data-question-id="${question.id}">
+                    <div class="question-header">
+                        <label class="checkbox-container">
+                            <input type="checkbox" value="${question.id}" 
+                                   onchange="handleQuestionChange(this)">
+                            <span class="checkmark"></span>
+                            <span class="question-number">${index}</span>
+                            <span class="question-title">${question.title}</span>
+                            <span class="question-hours">${question.estimatedHours}</span>
+                            <span class="question-complexity">${question.complexity}</span>
+                        </label>
+                    </div>
+                    <div class="question-description">${question.description}</div>
                     <div class="question-meta">
-                        <span class="hours-badge badge-foundever">${hours}h</span>
-                        <select id="priority_${question.id}" name="priority_${question.id}" 
-                                style="margin-left: 0.5rem; padding: 0.2rem 0.4rem; border: 1px solid #ccc; border-radius: 4px; font-size: 0.8rem; display: none;"
-                                onchange="window.handlePriorityChange('${question.id}')">
-                            <option value="">Select Priority</option>
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
+                        <span class="hours-badge">${question.estimatedHours}h</span>
+                        <span class="complexity-badge complexity-${question.complexity?.toLowerCase()}">${question.complexity}</span>
+                        <span class="category-badge">${question.category}</span>
+                    </div>
+                    <div class="priority-selector" id="priority_${question.id}" style="display: none;">
+                        <label for="priority_select_${question.id}">Priority:</label>
+                        <select id="priority_select_${question.id}" onchange="handlePriorityChange('${question.id}')">
+                            <option value="">Select priority...</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
                         </select>
                     </div>
-                    ${note ? `<div style="font-size: 0.9rem; color: #666; margin-top: 0.5rem;">📝 ${note}</div>` : ''}
                 </div>
-            </div>
-        `;
-    }
-    
-    return div;
-}
-
-// Setup event listeners
-function setupEventListeners() {
-    // Form submission
-    const form = document.getElementById('survey-form');
-    if (form) {
-        form.addEventListener('submit', handleFormSubmit);
-    }
-    
-    // Checkbox changes using event delegation
-    document.addEventListener('change', function(e) {
-        if (e.target.type === 'checkbox' && e.target.dataset.hours !== undefined) {
-            console.log('🔧 Checkbox event detected:', e.target.id);
-            handleCheckboxChange(e.target);
+            `;
         }
     });
     
-    // Email validation
-    document.addEventListener('input', function(e) {
-        if (e.target.type === 'email') {
-            validateEmail(e.target);
-        }
-    });
+    html += '</div>';
+    container.innerHTML = html;
     
-    // Also update button on any form change
-    document.addEventListener('input', updateSubmitButton);
-    document.addEventListener('change', updateSubmitButton);
-    
-    console.log('✅ Event listeners setup complete');
+    console.log('✅ Questions rendered successfully');
 }
 
-// Handle checkbox changes
-function handleCheckboxChange(checkbox) {
-    const hours = parseInt(checkbox.dataset.hours) || 0;
-    const title = checkbox.dataset.title || '';
-    const questionId = checkbox.id;
+// 🔧 FIXED: Handle question selection with complete data
+function handleQuestionChange(checkbox) {
+    const questionId = checkbox.value;
+    const questionContainer = checkbox.closest('.question-item');
+    const questionNumber = questionContainer.querySelector('.question-number')?.textContent || '';
+    const title = questionContainer.querySelector('.question-title')?.textContent || '';
+    const hours = parseInt(questionContainer.querySelector('.question-hours')?.textContent) || 0;
+    
+    // 🔧 FIX: Get complete question data including complexity and estimatedHours
+    const questionData = questionsData?.questions?.find(q => q.id === questionId);
+    const complexity = questionData?.complexity || 'Unknown';
+    const estimatedHours = questionData?.estimatedHours || 0;
+    
     const prioritySelect = document.getElementById(`priority_${questionId}`);
     
-    // Find question number
-    const questionIndex = questionsData.questions.findIndex(q => q.id === questionId);
-    const questionNumber = questionsData.questions.slice(0, questionIndex).filter(q => q.type === 'checkbox').length + 1;
-    
-    console.log('🔧 Checkbox changed:', questionId, 'checked:', checkbox.checked);
-    console.log('🔧 Priority select found:', !!prioritySelect);
-    
     if (checkbox.checked) {
-        // Check if this would exceed capacity
-        if (totalHours + hours > CAPACITY_LIMIT) {
-            checkbox.checked = false;
-            showMessage(`❌ Cannot select "${title}". Would exceed ${CAPACITY_LIMIT}h limit.`, 'error');
-            return;
-        }
-        
         // Show priority dropdown
         if (prioritySelect) {
-            prioritySelect.style.display = 'inline-block';
+            prioritySelect.style.display = 'block';
             console.log('✅ Showing priority dropdown for:', questionId);
-        } else {
-            console.error('❌ Priority select not found for:', questionId);
         }
         
+        // 🔧 FIX: Include complete data in selectedItems
         selectedItems.push({
             id: questionId,
             questionNumber: questionNumber,
             title: title,
             hours: hours,
-            priority: '' // Will be updated when priority is selected
+            complexity: complexity,           // ✅ Fixed: Added complexity
+            estimatedHours: estimatedHours,   // ✅ Fixed: Added estimatedHours
+            priority: ''
         });
         totalHours += hours;
-        console.log(`✅ Selected: ${questionNumber}. ${title} (${hours}h)`);
+        console.log(`✅ Selected: ${questionNumber}. ${title} (${hours}h, ${complexity})`);
     } else {
         // Hide priority dropdown
         if (prioritySelect) {
             prioritySelect.style.display = 'none';
             prioritySelect.value = '';
-            console.log('❌ Hiding priority dropdown for:', questionId);
         }
         
         selectedItems = selectedItems.filter(item => item.id !== questionId);
@@ -226,17 +168,15 @@ function handleCheckboxChange(checkbox) {
 
 // Handle priority changes
 function handlePriorityChange(questionId) {
-    const prioritySelect = document.getElementById(`priority_${questionId}`);
+    const prioritySelect = document.getElementById(`priority_select_${questionId}`);
     const priority = prioritySelect.value;
     
-    // Update the priority in selectedItems
     const item = selectedItems.find(item => item.id === questionId);
     if (item) {
         item.priority = priority;
         console.log(`🎯 Priority set: ${item.title} = ${priority}`);
     }
     
-    // Update submit button state
     updateSubmitButton();
 }
 
@@ -245,15 +185,12 @@ function updateCapacitySummary() {
     const selectedCount = selectedItems.length;
     const capacityUsed = Math.round((totalHours / CAPACITY_LIMIT) * 100);
     
-    // Update counters if they exist
     updateElement('selected-count', selectedCount);
     updateElement('total-hours', totalHours + 'h');
     updateElement('capacity-used', capacityUsed + '%');
     
-    // Update capacity status
     updateCapacityStatus(capacityUsed);
     
-    // Show/hide capacity summary
     const summaryElement = document.getElementById('capacity-summary');
     if (summaryElement) {
         summaryElement.style.display = selectedCount > 0 ? 'grid' : 'none';
@@ -267,15 +204,18 @@ function updateCapacityStatus(capacityUsed) {
     const statusElement = document.getElementById('capacity-status');
     if (!statusElement) return;
     
-    if (capacityUsed > 100) {
-        statusElement.textContent = 'Over capacity!';
-        statusElement.style.color = 'var(--danger-color)';
-    } else if (capacityUsed > 80) {
-        statusElement.textContent = 'Near capacity';
-        statusElement.style.color = 'var(--warning-color)';
+    if (capacityUsed <= 50) {
+        statusElement.textContent = 'Light Load';
+        statusElement.className = 'text-foundever-success';
+    } else if (capacityUsed <= 80) {
+        statusElement.textContent = 'Good Capacity';
+        statusElement.className = 'text-foundever-primary';
+    } else if (capacityUsed <= 100) {
+        statusElement.textContent = 'Near Capacity';
+        statusElement.className = 'text-foundever-warning';
     } else {
-        statusElement.textContent = 'Good capacity';
-        statusElement.style.color = 'var(--success-color)';
+        statusElement.textContent = 'Over Capacity';
+        statusElement.className = 'text-foundever-danger';
     }
 }
 
@@ -287,72 +227,44 @@ function updateSubmitButton() {
     const emailInput = document.querySelector('input[type="email"]');
     const hasEmail = emailInput?.value?.trim() && emailInput.value.includes('@');
     const hasSelections = selectedItems.length > 0;
-    
-    // Check if all selected items have priorities
     const allHavePriorities = selectedItems.every(item => item.priority && item.priority !== '');
     
     const shouldEnable = hasEmail && hasSelections && allHavePriorities;
     
     submitBtn.disabled = !shouldEnable;
-    
-    if (shouldEnable) {
-        submitBtn.style.opacity = '1';
-        submitBtn.style.cursor = 'pointer';
-    } else {
-        submitBtn.style.opacity = '0.6';
-        submitBtn.style.cursor = 'not-allowed';
-    }
-    
-    // Show message if missing priorities
-    if (hasEmail && hasSelections && !allHavePriorities) {
-        const itemsWithoutPriority = selectedItems.filter(item => !item.priority || item.priority === '');
-        if (itemsWithoutPriority.length > 0) {
-            showMessage(`⚠️ Please select priority for all selected items`, 'warning');
-        }
-    } else {
-        clearMessage();
-    }
+    submitBtn.style.opacity = shouldEnable ? '1' : '0.6';
+    submitBtn.style.cursor = shouldEnable ? 'pointer' : 'not-allowed';
 }
 
-// Validate email
-function validateEmail(emailInput) {
-    const email = emailInput.value.trim();
-    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    
-    if (email && !isValid) {
-        emailInput.style.borderColor = 'var(--danger-color)';
-        showMessage('Please enter a valid email address', 'error');
-    } else {
-        emailInput.style.borderColor = 'var(--border-color)';
-        clearMessage();
+// Setup event listeners
+function setupEventListeners() {
+    const form = document.getElementById('survey-form');
+    if (form) {
+        form.addEventListener('submit', handleFormSubmit);
     }
     
-    updateSubmitButton();
+    // Email validation
+    const emailInput = document.querySelector('input[type="email"]');
+    if (emailInput) {
+        emailInput.addEventListener('input', () => {
+            validateEmail(emailInput);
+            updateSubmitButton();
+        });
+    }
 }
 
 // Handle form submission
 async function handleFormSubmit(e) {
     e.preventDefault();
-    debugLog('📤 Form submission started');
     
     try {
-        // Validate form
         const formData = new FormData(e.target);
         const email = formData.get('email')?.trim();
         
-        debugLog(`📧 Email: ${email}`);
-        debugLog(`📊 Selected items: ${selectedItems.length}`);
-        debugLog(`⏰ Total hours: ${totalHours}`);
-        
-        if (!email) {
-            throw new Error('Email is required');
+        if (!email || selectedItems.length === 0) {
+            throw new Error('Please fill all required fields');
         }
         
-        if (selectedItems.length === 0) {
-            throw new Error('Please select at least one item');
-        }
-        
-        // Show loading state
         showMessage('🔄 Submitting form...', 'info');
         const submitBtn = document.getElementById('floating-submit');
         if (submitBtn) {
@@ -360,7 +272,6 @@ async function handleFormSubmit(e) {
             submitBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">Submitting...</span>';
         }
         
-        // Prepare submission data
         const submissionData = {
             email: email,
             selectedItems: selectedItems,
@@ -370,47 +281,19 @@ async function handleFormSubmit(e) {
             capacityUsed: Math.round((totalHours / CAPACITY_LIMIT) * 100)
         };
         
-        debugLog('📋 Submission data prepared');
-        
-        // Try AWS submission if available
-        debugLog('🔍 Checking AWS Integration...');
         if (window.AWSIntegration && typeof window.AWSIntegration.submitToAWS === 'function') {
-            debugLog('📡 AWS Integration found, attempting submission...');
-            try {
-                const response = await window.AWSIntegration.submitToAWS(submissionData);
-                debugLog('✅ AWS submission successful!');
-                showMessage(`✅ Form submitted to AWS! Record ID: ${response.id || 'N/A'}`, 'success');
-            } catch (awsError) {
-                debugLog(`❌ AWS submission failed: ${awsError.message}`);
-                debugLog('💾 Saving data locally as backup...');
-                
-                // Save to localStorage as backup
-                const localData = JSON.parse(localStorage.getItem('sprint24_submissions') || '[]');
-                localData.push({
-                    ...submissionData,
-                    id: 'local_' + Date.now(),
-                    savedAt: new Date().toISOString()
-                });
-                localStorage.setItem('sprint24_submissions', JSON.stringify(localData));
-                
-                debugLog(`✅ Data saved locally! Total submissions: ${localData.length}`);
-                showMessage(`✅ Form submitted and saved locally! (AWS unavailable)`, 'success');
-            }
+            const response = await window.AWSIntegration.submitToAWS(submissionData);
+            showMessage(`✅ Form submitted successfully! Record ID: ${response.id || 'N/A'}`, 'success');
         } else {
-            debugLog('📝 AWS Integration not available, using fallback...');
             await new Promise(resolve => setTimeout(resolve, 1500));
-            debugLog('✅ Simulated submission successful');
             showMessage(`✅ Form submitted successfully! (${selectedItems.length} items, ${totalHours}h total)`, 'success');
         }
         
-        // Reset form
         resetForm();
         
     } catch (error) {
-        debugLog(`❌ Form submission error: ${error.message}`);
         showMessage(`❌ Submission failed: ${error.message}`, 'error');
         
-        // Restore submit button
         const submitBtn = document.getElementById('floating-submit');
         if (submitBtn) {
             submitBtn.disabled = false;
@@ -419,33 +302,45 @@ async function handleFormSubmit(e) {
     }
 }
 
-// Reset form after successful submission
+// Reset form
 function resetForm() {
-    // Clear checkboxes
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+    document.querySelectorAll('.priority-selector').forEach(ps => ps.style.display = 'none');
     
-    // Clear email
     const emailInput = document.querySelector('input[type="email"]');
     if (emailInput) emailInput.value = '';
     
-    // Reset variables
     selectedItems = [];
     totalHours = 0;
     
-    // Update UI
     updateCapacitySummary();
     updateSubmitButton();
     
-    // Restore submit button
     const submitBtn = document.getElementById('floating-submit');
     if (submitBtn) {
         submitBtn.innerHTML = '<span class="btn-icon">📝</span><span class="btn-text">Submit</span>';
     }
-    
-    console.log('🔄 Form reset complete');
 }
 
-// Update form title
+// Utility functions
+function updateElement(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value;
+}
+
+function validateEmail(emailInput) {
+    const email = emailInput.value.trim();
+    const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    
+    emailInput.style.borderColor = email && !isValid ? 'var(--danger-color)' : 'var(--border-color)';
+    
+    if (email && !isValid) {
+        showMessage('Please enter a valid email address', 'error');
+    } else {
+        clearMessage();
+    }
+}
+
 function updateFormTitle() {
     const titleElement = document.getElementById('form-title');
     if (titleElement && questionsData?.formTitle) {
@@ -453,116 +348,27 @@ function updateFormTitle() {
     }
 }
 
-// Show message to user
-function showMessage(message, type = 'info') {
-    const messageElement = document.getElementById('result-message');
-    if (messageElement) {
-        messageElement.textContent = message;
-        messageElement.className = type;
-        messageElement.style.display = 'block';
-    }
-    console.log(`📢 Message (${type}): ${message}`);
+function showMessage(message, type) {
+    const messageDiv = document.getElementById('result-message') || createMessageDiv();
+    messageDiv.textContent = message;
+    messageDiv.className = `message ${type}`;
+    messageDiv.style.display = 'block';
 }
 
-// Clear message
 function clearMessage() {
-    const messageElement = document.getElementById('result-message');
-    if (messageElement) {
-        messageElement.style.display = 'none';
-    }
+    const messageDiv = document.getElementById('result-message');
+    if (messageDiv) messageDiv.style.display = 'none';
 }
 
-// Update element content safely
-function updateElement(id, content) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.textContent = content;
-    }
+function createMessageDiv() {
+    const div = document.createElement('div');
+    div.id = 'result-message';
+    div.style.cssText = 'padding: 10px; margin: 10px 0; border-radius: 5px; display: none;';
+    document.querySelector('.container').appendChild(div);
+    return div;
 }
 
-// Fallback questions if JSON fails to load
-function getFallbackQuestions() {
-    return {
-        formTitle: "Sprint 23 Prioritization",
-        subtitle: "Select items for the upcoming sprint",
-        questions: [
-            {
-                id: "email",
-                type: "email",
-                title: "Your Email Address",
-                placeholder: "Enter your email",
-                required: true
-            },
-            {
-                id: "question1",
-                type: "checkbox",
-                title: "Associate Evaluation form dates",
-                estimatedHours: 24,
-                complexity: "High"
-            },
-            {
-                id: "question2",
-                type: "checkbox",
-                title: "Export observation feedback pointers",
-                estimatedHours: 4,
-                complexity: "Low"
-            },
-            {
-                id: "question3",
-                type: "checkbox",
-                title: "Visual button for pending acknowledgment",
-                estimatedHours: 4,
-                complexity: "Low"
-            },
-            {
-                id: "question4",
-                type: "checkbox",
-                title: "Automatic email generation",
-                estimatedHours: 16,
-                complexity: "Medium"
-            },
-            {
-                id: "question5",
-                type: "checkbox",
-                title: "OJT KPI 'NA' functionality",
-                estimatedHours: null,
-                complexity: "High",
-                note: "TBD - Requires technical analysis"
-            },
-            {
-                id: "question6",
-                type: "checkbox",
-                title: "Class cancellation status",
-                estimatedHours: 20,
-                complexity: "Medium"
-            },
-            {
-                id: "question7",
-                type: "checkbox",
-                title: "STAR history visibility",
-                estimatedHours: 6,
-                complexity: "Low"
-            },
-            {
-                id: "question8",
-                type: "checkbox",
-                title: "Admin ECN editing capability",
-                estimatedHours: 48,
-                complexity: "Very High"
-            },
-            {
-                id: "question9",
-                type: "checkbox",
-                title: "OJT - Revamp",
-                estimatedHours: 200,
-                complexity: "Critical",
-                note: "Major project - consider separate planning"
-            }
-        ]
-    };
-}
-
-// Export functions for testing and global access
+// Global exports
 if (typeof window !== 'undefined') {
     window.SprintForm = {
         initializeForm,
@@ -572,6 +378,15 @@ if (typeof window !== 'undefined') {
         totalHours: () => totalHours
     };
     
-    // Make priority handler globally accessible
+    window.handleQuestionChange = handleQuestionChange;
     window.handlePriorityChange = handlePriorityChange;
 }
+
+// Auto-initialize when DOM is ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeForm);
+} else {
+    initializeForm();
+}
+
+console.log('🔧 Main.js loaded with PRIORITY FIX - complexity and estimatedHours now included');
